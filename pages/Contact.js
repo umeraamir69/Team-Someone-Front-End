@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from 'react'
 import Image from 'next/image';
-import banner_Img from '../public/images/contact_banner.png'
+
 import Link from 'next/link';
 import ContactForm from '../components/userview/ContactForm';
 
