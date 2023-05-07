@@ -209,7 +209,7 @@ const Login = () => {
                                 Sign in
                             </button>
 
-                            <p className="px-6 text-sm text-center dark:text-gray-600">Don't have an account yet?
+                            <p className="px-6 text-sm text-center dark:text-gray-600">Don&lsquo;t have an account yet?
                                 <Link href="/CreateAccount">
                                     <span className="hover:underline text-sm font-bold  px-2 dark:text-indigo-800">Sign up</span>
                                 </Link>

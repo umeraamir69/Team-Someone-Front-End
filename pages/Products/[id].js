@@ -5,6 +5,9 @@ import Stars from '../../components/userview/Stars'
 import Link from 'next/link';
 import { ToastContainer, toast, Zoom } from 'react-toastify';
 import Image from 'next/image'
+import AddReviews from '@/components/userview/AddReviews';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux'
 
 
 const ProductPg = ({ res }) => {
@@ -14,8 +17,15 @@ const ProductPg = ({ res }) => {
     const [show3, setShow3] = useState(false);
     const [show4, setShow4] = useState(false);
     const [data, setdata] = useState(JSON.parse(res))
+    const [addrev, setAddrev] = useState(false)
 
+    const dispatch = useDispatch();
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+    const userData = useSelector((state) => state.auth.user);
 
+    const handlereviews = () => {
+        setAddrev(!addrev)
+    }
     const HanldeClick = (event) => {
         console.log("I have clicked", event.target.name);
     }
@@ -155,29 +165,51 @@ const ProductPg = ({ res }) => {
                     </section>
 
                     <div className=" 2xl:container 2xl:mx-auto md:py-2 lg:px-36 md:px-6 py-5 px-4">
-                        <div className=" flex md:flex-row flex-col md:space-x-8 md:mt-16 mt-8">
-                            <div className=" md:w-full lg:w-full w-full md:mt-0 sm:mt-14 mt-10">
+                        {isAuthenticated ? <a onClick={handlereviews} class="relative inline-block text-lg group">
+                            <span class="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
+                                <span class="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-gray-50"></span>
+                                <span class="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
+                                <span class="relative">Add Reviews</span>
+                            </span>
+                            <span class="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-gray-900 rounded-lg group-hover:mb-0 group-hover:mr-0" data-rounded="rounded-lg"></span>
+                        </a> :
+                            <Link href="/Login" class="relative inline-block text-lg group ">
+                                <span class="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
+                                    <span class="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-gray-50"></span>
+                                    <span class="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
+                                    <span class="relative">Login to Add Reviews</span>
+                                </span>
+                                <span class="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-gray-900 rounded-lg group-hover:mb-0 group-hover:mr-0" data-rounded="rounded-lg"></span>
+                            </Link>
+                        }
+                        {
+                            !addrev ?
 
-                                <div>
-                                    <div className=" flex justify-between items-center cursor-pointer cursor-pointer" onClick={() => setShow(!show)}>
-                                        <h3 className=" font-semibold text-xl leading-5 text-gray-800">Reviews</h3>
-                                        <button aria-label="too" className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800">
-                                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path className={show ? "hidden" : "block"} d="M10 4.1665V15.8332" stroke="#1F2937" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
-                                                <path d="M4.16602 10H15.8327" stroke="#1F2937" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
-                                        </button>
+                                <div className=" flex md:flex-row flex-col md:space-x-8 md:mt-16 mt-8">
+                                    <div className=" md:w-full lg:w-full w-full md:mt-0 sm:mt-14 mt-10">
+
+                                        <div>
+                                            <div className=" flex justify-between items-center cursor-pointer cursor-pointer" onClick={() => setShow(!show)}>
+                                                <h3 className=" font-semibold text-xl leading-5 text-gray-800">Reviews</h3>
+                                                <button aria-label="too" className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800">
+                                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path className={show ? "hidden" : "block"} d="M10 4.1665V15.8332" stroke="#1F2937" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+                                                        <path d="M4.16602 10H15.8327" stroke="#1F2937" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <section className={"font-normal py-4 text-base leading-6 text-gray-600 mt-4 w-11/12 " + (show ? "block" : "hidden")}>
+                                                {!data.reviews.length <= 0 ? data.reviews.map((item) => (
+                                                    <div key={item}>{item}</div>
+                                                )) : "no Reviews Avalble"}
+                                            </section>
+                                        </div>
+
+                                        <hr className={`bg-gray-200 ${show ? "mt-0 mb-7" : "my-7"}`} />
                                     </div>
-                                    <section className={"font-normal py-4 text-base leading-6 text-gray-600 mt-4 w-11/12 " + (show ? "block" : "hidden")}>
-                                        {!data.reviews.length <= 0 ? data.reviews.map((item) => (
-                                            <div>{item}</div>
-                                        )) : "no Reviews Avalble"}
-                                    </section>
-                                </div>
-
-                                <hr className={`bg-gray-200 ${show ? "mt-0 mb-7" : "my-7"}`} />
-                            </div>
-                        </div>
+                                </div> :
+                                <AddReviews />
+                        }
                     </div>
                 </div> :
                 <div className='flex items-center justify-center lg:h-72 sm:h-64 flex-wrap flex-col'>

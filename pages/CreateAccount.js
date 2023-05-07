@@ -43,7 +43,7 @@ const CreateAccount = () => {
                 Router.push("/")
             }
             else {
-                localStorage.clear("auth-token")
+                localStorage.removeItem("auth-token")
                 dispatch(logout());
                 setloader(false);
 
