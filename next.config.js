@@ -1,6 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+
 }
 
-module.exports = nextConfig
+
+
+
+module.exports = {
+  images: {
+    domains: ['softec-23-production.up.railway.app']
+  },
+  reactStrictMode: true,
+}

@@ -1,25 +1,28 @@
 import Link from 'next/link';
 import Router from 'next/router';
-import { React, useState, useEffect, useContext } from 'react'
-
-
-
+import { React, useState, useEffect } from 'react'
 import { ToastContainer, toast, Zoom } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import Loader from '../components/Loader'
+import { useDispatch } from 'react-redux';
 
+import { loginSuccess } from '../store/Action/userAuth'
+import { admimloginSuccess } from '@/store/Action/adminAuth';
 
 const Login = () => {
 
     const [Pass, setPass] = useState(false)
-    const [Data, setData] = useState({ Email: "", Password: "" });
+    const [Data, setData] = useState({ email: "", password: "" });
 
 
     useEffect(() => {
         if (localStorage.getItem("auth-token")) {
             Router.push("/");
-            dispatch(loginSuccess());
+        }
+        else if (localStorage.getItem("session")) {
+            Router.push("/Dashboard/Home");
         }
     }, []); // Redercting to Home page if user is loged in (no need to login if auth-token is avalible for user)
+    const dispatch = useDispatch();
 
 
 
@@ -27,7 +30,7 @@ const Login = () => {
         setData({ ...Data, [event.target.name]: event.target.value })
     }
 
-    const handleSeePassword = () => {
+    const handleSeepassword = () => {
         if (Pass) {
             setPass(false)
         }
@@ -39,7 +42,7 @@ const Login = () => {
 
     const handleLoginSubmit = async (event) => {
         event.preventDefault();
-        const request = await fetch('/api/Login', {
+        const request = await fetch('https://softec-23-production.up.railway.app/api/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -47,9 +50,10 @@ const Login = () => {
             body: JSON.stringify(Data),
         })
         let output = await request.json()
+        console.log(output);
 
-        if (output.status) {
-            toast.success(output.error, {
+        if (output.success) {
+            toast.success("Login Succesful", {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -59,16 +63,20 @@ const Login = () => {
                 progress: undefined,
                 transition: Zoom,
             });
-            // localStorage.setItem("auth-token", output.data);
-            setData({ Email: "", Password: "" });
-            // handleLoginState(true)
-
-            Router.push("/")
-
-
-
-
+            setData({ email: "", password: "" });
+            if (output.user.role == "admin") {
+                localStorage.setItem("session", output.token);
+                dispatch(admimloginSuccess(output.user));
+                Router.push("/Dashboard/Home")
+            }
+            else {
+                localStorage.setItem("auth-token", output.token);
+                dispatch(loginSuccess(output.user));
+                Router.push("/")
+            }
+            return
         }
+
         else if (!output.status) {
             toast.error(output.error, {
                 position: "top-right",
@@ -118,17 +126,17 @@ const Login = () => {
                             <p className="text-lg font-medium">Sign in to your account</p>
 
                             <div>
-                                <label htmlFor="Email" className="text-sm font-medium">Email & Contact</label>
+                                <label htmlFor="email" className="text-sm font-medium">email & Contact</label>
 
                                 <div className="relative mt-1">
                                     <input
                                         type="email"
-                                        id="Email"
-                                        name='Email'
+                                        id="email"
+                                        name='email'
                                         className="w-full p-4 pr-12 text-sm border-gray-200 rounded-lg shadow-sm"
                                         placeholder="Enter Valid email"
                                         required
-                                        value={Data.Email}
+                                        value={Data.email}
                                         onChange={handleChange}
                                     />
 
@@ -153,28 +161,26 @@ const Login = () => {
 
                             <div>
                                 <div className="flex justify-end">
-                                    <label htmlFor="Password" className="text-sm font-medium  mr-auto">Password</label>
-                                    <Link href="/FrogotPassword">
-                                        <p>
-                                            <a className=" ml-auto text-xs hover:underline dark:text-gray-500  hover:text-indigo-600  font-bold" >Forgot password?</a>
-                                        </p>
+                                    <label htmlFor="password" className="text-sm font-medium mr-auto">password</label>
+                                    <Link href="/Frogotpassword">
+                                        <p className=" ml-auto text-xs hover:underline dark:text-gray-500  hover:text-indigo-600  font-bold" >Forgot password?</p>
                                     </Link>
                                 </div>
 
                                 <div className="relative mt-1">
                                     <input
                                         type={Pass ? "text" : "password"}
-                                        id="Password"
-                                        name="Password"
+                                        id="password"
+                                        name="password"
                                         className="w-full p-4 pr-12 text-sm border-gray-200 rounded-lg shadow-sm"
                                         placeholder="Enter password"
                                         required
-                                        value={Data.Password}
+                                        value={Data.password}
                                         onChange={handleChange}
 
                                     />
 
-                                    <span className="absolute inset-y-0 inline-flex items-center right-4 cursor-pointer" onClick={handleSeePassword}>
+                                    <span className="absolute inset-y-0 inline-flex items-center right-4 cursor-pointer" onClick={handleSeepassword}>
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             className="w-5 h-5 text-gray-400"
@@ -205,8 +211,7 @@ const Login = () => {
 
                             <p className="px-6 text-sm text-center dark:text-gray-600">Don't have an account yet?
                                 <Link href="/CreateAccount">
-
-                                    <p className="hover:underline text-sm font-bold  px-2 dark:text-indigo-800">Sign up</p>
+                                    <span className="hover:underline text-sm font-bold  px-2 dark:text-indigo-800">Sign up</span>
                                 </Link>
                             </p>
                         </form>
@@ -218,33 +223,34 @@ const Login = () => {
 
                 <div className="relative w-full sm:h-96 lg:w-1/2 lg:h-full  xl:h-full z-0">
                     <div className="px-4 py-10 sm:mt-5 md:mt-5 space-y-10 bg-gray-100 xl:py-32 md:px-40 lg:px-20 xl:px-40">
-                        <a href="/" className='flex ' title="Go to Kutty Home Page">
-                            <svg
-                                className="w-8 text-deep-purple-accent-400"
-                                viewBox="0 0 24 24"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeMiterlimit="10"
-                                stroke="currentColor"
-                                fill="none"
-                            >
-                                <rect x="3" y="1" width="7" height="12" />
-                                <rect x="3" y="17" width="7" height="6" />
-                                <rect x="14" y="1" width="7" height="6" />
-                                <rect x="14" y="11" width="7" height="12" />
-                            </svg>
-                            <span className="ml-2 text-xl font-bold tracking-wide text-gray-800 uppercase">
-                                Someone Gaming Store.
-                            </span>
-                        </a>
+
+                        <svg
+                            className="w-8 text-deep-purple-accent-400"
+                            viewBox="0 0 24 24"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeMiterlimit="10"
+                            stroke="currentColor"
+                            fill="none"
+                        >
+                            <rect x="3" y="1" width="7" height="12" />
+                            <rect x="3" y="17" width="7" height="6" />
+                            <rect x="14" y="1" width="7" height="6" />
+                            <rect x="14" y="11" width="7" height="12" />
+                        </svg>
+                        <span className="ml-2 text-xl font-bold tracking-wide text-gray-800 uppercase">
+                            Vestire Store.
+                        </span>
+                        <span className="sr-only">Kutty Home Page</span>
+
                         <div className="flex space-x-3">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="flex-none w-6 h-6 mt-1 text-purple-700">
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                             </svg>
                             <div>
                                 <h2 className="text-xl font-medium text-purple-700">Free account</h2>
-                                <p className="mt-1 text-gray-700">Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae illo consequatur.</p>
+                                <p className="mt-1 text-gray-700">Create apps, connect databases and add-on services, and collaborate on your apps, for free.</p>
                             </div>
                         </div>
                         <div className="flex space-x-3">
@@ -252,8 +258,8 @@ const Login = () => {
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                             </svg>
                             <div>
-                                <h2 className="text-xl font-medium text-purple-700">Free delivery</h2>
-                                <p className="mt-1 text-gray-700">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea suscipit aut praesentium.</p>
+                                <h2 className="text-xl font-medium text-purple-700">Your app platform</h2>
+                                <p className="mt-1 text-gray-700">A platform for apps, with app management & instant scaling, for development and production.</p>
                             </div>
                         </div>
                         <div className="flex space-x-3">
@@ -261,11 +267,19 @@ const Login = () => {
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                             </svg>
                             <div>
-                                <h2 className="text-xl font-medium text-purple-700">International Waranty</h2>
-                                <p className="mt-1 text-gray-700">Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro illo libero doloremque.</p>
+                                <h2 className="text-xl font-medium text-purple-700">Deploy now</h2>
+                                <p className="mt-1 text-gray-700">Go from code to running app in minutes. Deploy, scale, and deliver your app to the world.</p>
                             </div>
                         </div>
-
+                        <div className="flex space-x-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="flex-none w-6 h-6 mt-1 text-purple-700">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                            <div>
+                                <h2 className="text-xl font-medium text-purple-700">Free account</h2>
+                                <p className="mt-1 text-gray-700">Create apps, connect databases and add-on services, and collaborate on your apps, for free.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>

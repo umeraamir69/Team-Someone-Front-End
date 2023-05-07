@@ -11,60 +11,14 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { Slide, toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
-import { admimloginSuccess, adminlogout } from '../../store/Action/userAuth'
+import { admimloginSuccess, adminlogout, logout } from '../../store/Action/userAuth'
 import { useSelector } from 'react-redux'
+import keyss from '../../public/Images/key.png'
+import { LOGOUT } from '@/store/Action/type'
 
 
 
 
-
-
-
-const products = [
-    {
-        id: 1,
-        name: 'Throwback Hip Bag',
-        href: '#',
-        color: 'Salmon',
-        price: '$90.00',
-        quantity: 1,
-        imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg',
-        imageAlt: 'Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.',
-    },
-    {
-        id: 2,
-        name: 'Medium Stuff Satchel',
-        href: '#',
-        color: 'Blue',
-        price: '$32.00',
-        quantity: 1,
-        imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-02.jpg',
-        imageAlt:
-            'Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.',
-    },
-    {
-        id: 3,
-        name: 'Throwback Hip Bag',
-        href: '#',
-        color: 'Salmon',
-        price: '$90.00',
-        quantity: 1,
-        imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg',
-        imageAlt: 'Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.',
-    },
-    {
-        id: 4,
-        name: 'Medium Stuff Satchel',
-        href: '#',
-        color: 'Blue',
-        price: '$32.00',
-        quantity: 1,
-        imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-02.jpg',
-        imageAlt:
-            'Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.',
-    },
-    // More products...
-]
 
 const linksArray = [
     // [[title: string, href: string, icon : JSX]]
@@ -86,119 +40,40 @@ const linksArray = [
 const navigation = {
     categories: [
         {
-            id: 'Gaming',
-            name: 'Gaming Gears',
+            id: 'Categories',
+            name: 'Categories',
             featured: [
                 {
-                    name: 'New Arrivals',
-                    href: '#',
-                    imageSrc: 'https://tailwindui.com/img/ecommerce-images/mega-menu-category-01.jpg',
+                    name: 'New Keyboards',
+                    href: '/Products',
+                    imageSrc: 'Images/key.png',
                     imageAlt: 'Models sitting back to back, wearing Basic Tee in black and bone.',
                 },
                 {
-                    name: 'Basic Tees',
+                    name: 'Playstation 5',
                     href: '#',
-                    imageSrc: 'https://tailwindui.com/img/ecommerce-images/mega-menu-category-02.jpg',
+                    imageSrc: 'Images/asd.jpeg',
                     imageAlt: 'Close up of Basic Tee fall bundle with off-white, ochre, olive, and black tees.',
                 },
             ],
             sections: [
                 {
-                    id: 'clothing',
-                    name: 'Clothing',
+                    id: 'Geaming_Gear',
+                    name: 'Geaming Gear',
                     items: [
-                        { name: 'Tops', href: '#' },
-                        { name: 'Dresses', href: '#' },
-                        { name: 'Pants', href: '#' },
-                        { name: 'Denim', href: '#' },
-                        { name: 'Sweaters', href: '#' },
-                        { name: 'T-Shirts', href: '#' },
-                        { name: 'Jackets', href: '#' },
-                        { name: 'Activewear', href: '#' },
-                        { name: 'Browse All', href: '#' },
+                        { name: 'Gears', href: '/Products' },
+                        { name: 'Accesories', href: '/Products' }
                     ],
                 },
                 {
-                    id: 'accessories',
-                    name: 'Accessories',
+                    id: 'Video Games',
+                    name: 'Video Games',
                     items: [
-                        { name: 'Watches', href: '#' },
-                        { name: 'Wallets', href: '#' },
-                        { name: 'Bags', href: '#' },
-                        { name: 'Sunglasses', href: '#' },
-                        { name: 'Hats', href: '#' },
-                        { name: 'Belts', href: '#' },
+                        { name: 'Video Games', href: '/Products' }
                     ],
-                },
-                {
-                    id: 'brands',
-                    name: 'Brands',
-                    items: [
-                        { name: 'Full Nelson', href: '#' },
-                        { name: 'My Way', href: '#' },
-                        { name: 'Re-Arranged', href: '#' },
-                        { name: 'Counterfeit', href: '#' },
-                        { name: 'Significant Other', href: '#' },
-                    ],
-                },
+                }
             ],
-        },
-        {
-            id: 'Video Games',
-            name: 'Video Games',
-            featured: [
-                {
-                    name: 'New Arrivals',
-                    href: '#',
-                    imageSrc: 'https://tailwindui.com/img/ecommerce-images/product-page-04-detail-product-shot-01.jpg',
-                    imageAlt: 'Drawstring top with elastic loop closure and textured interior padding.',
-                },
-                {
-                    name: 'Artwork Tees',
-                    href: '#',
-                    imageSrc: 'https://tailwindui.com/img/ecommerce-images/category-page-02-image-card-06.jpg',
-                    imageAlt:
-                        'Three shirts in gray, white, and blue arranged on table with same line drawing of hands and shapes overlapping on front of shirt.',
-                },
-            ],
-            sections: [
-                {
-                    id: 'clothing',
-                    name: 'Clothing',
-                    items: [
-                        { name: 'Tops', href: '#' },
-                        { name: 'Pants', href: '#' },
-                        { name: 'Sweaters', href: '#' },
-                        { name: 'T-Shirts', href: '#' },
-                        { name: 'Jackets', href: '#' },
-                        { name: 'Activewear', href: '#' },
-                        { name: 'Browse All', href: '#' },
-                    ],
-                },
-                {
-                    id: 'accessories',
-                    name: 'Accessories',
-                    items: [
-                        { name: 'Watches', href: '#' },
-                        { name: 'Wallets', href: '#' },
-                        { name: 'Bags', href: '#' },
-                        { name: 'Sunglasses', href: '#' },
-                        { name: 'Hats', href: '#' },
-                        { name: 'Belts', href: '#' },
-                    ],
-                },
-                {
-                    id: 'brands',
-                    name: 'Brands',
-                    items: [
-                        { name: 'Re-Arranged', href: '#' },
-                        { name: 'Counterfeit', href: '#' },
-                        { name: 'Full Nelson', href: '#' },
-                        { name: 'My Way', href: '#' },
-                    ],
-                },
-            ],
-        },
+        }
     ],
     pages: [
         { name: 'About Us', href: '/AboutUs' },
@@ -233,6 +108,7 @@ const Navbar = () => {
     }
 
 
+
     const handleClickOutside = (event) => {
         if (buttonRef.current && !buttonRef.current.contains(event.target)) {
             event.stopPropagation()
@@ -241,12 +117,30 @@ const Navbar = () => {
     // =======================================================
 
 
+    const handleRemove = (event) => {
+        const a = JSON.parse(localStorage.getItem("cart"))
+        for (let index = 0; index < a.length; index++) {
+            if (a[index]._id == event.target.name) {
+                a.splice(index, index + 1)
+            }
+        }
+        console.log(a);
+        localStorage.setItem("cart", JSON.stringify(a))
+        setCart(false)
+        if (a.length < 0) {
+
+            setcart(false)
+        }
+    }
+
     useEffect(() => {
         if (localStorage.getItem("auth-token")) {
-            //logout func
+            localStorage.clear("auth-token");
+            localStorage.clear("session");
         }
-        document.addEventListener("mousedown", handleClickOutside)
 
+        document.addEventListener("mousedown", handleClickOutside)
+        setcart(localStorage.getItem("cart"))
         return () => {
             document.removeEventListener("mousedown", handleClickOutside)
         }
@@ -268,15 +162,13 @@ const Navbar = () => {
             progress: undefined,
             transition: Slide
         });
-
+        dispatch(logout())
     }
 
     const handleCartClick = () => {
-        if (Cart) {
-            setCart(false)
-        }
-        else {
-            setCart(true)
+        setCart(!Cart)
+        if (localStorage.getItem("cart")) {
+            setcart(true)
         }
     }
 
@@ -293,6 +185,7 @@ const Navbar = () => {
         setSerach(e.target.value);
     }
 
+    const [cart, setcart] = useState()
 
     return (
         <>
@@ -362,10 +255,10 @@ const Navbar = () => {
                                                                 <div className="aspect-w-1 aspect-h-1 rounded-lg bg-gray-100 overflow-hidden group-hover:opacity-75">
                                                                     <img src={item.imageSrc} alt={item.imageAlt} className="object-center object-cover" />
                                                                 </div>
-                                                                <a href={item.href} className="mt-6 block font-medium text-gray-900">
+                                                                <Link href={item.href} className="mt-6 block font-medium text-gray-900">
                                                                     <span className="absolute z-10 inset-0" aria-hidden="true" />
                                                                     {item.name}
-                                                                </a>
+                                                                </Link>
                                                                 <p aria-hidden="true" className="mt-1">
                                                                     Shop now
                                                                 </p>
@@ -384,9 +277,9 @@ const Navbar = () => {
                                                             >
                                                                 {section.items.map((item) => (
                                                                     <li key={item.name} className="flow-root">
-                                                                        <a href={item.href} className="-m-2 p-2 block text-gray-500">
+                                                                        <Link href={item.href} className="-m-2 p-2 block text-gray-500">
                                                                             {item.name}
-                                                                        </a>
+                                                                        </Link>
                                                                     </li>
                                                                 ))}
                                                             </ul>
@@ -521,10 +414,10 @@ const Navbar = () => {
                                                                                                 className="object-center object-cover"
                                                                                             />
                                                                                         </div>
-                                                                                        <a href={item.href} className="mt-6 block font-medium text-gray-900">
+                                                                                        <Link href={item.href} className="mt-6 block font-medium text-gray-900" >
                                                                                             <span className="absolute z-30 inset-0" aria-hidden="true" />
                                                                                             {item.name}
-                                                                                        </a>
+                                                                                        </Link>
                                                                                         <p aria-hidden="true" className="mt-1">
                                                                                             Shop now
                                                                                         </p>
@@ -544,9 +437,9 @@ const Navbar = () => {
                                                                                         >
                                                                                             {section.items.map((item) => (
                                                                                                 <li key={item.name} className="flex">
-                                                                                                    <a href={item.href} className="hover:text-gray-800">
+                                                                                                    <Link href={item.href} className="hover:text-gray-800">
                                                                                                         {item.name}
-                                                                                                    </a>
+                                                                                                    </Link>
                                                                                                 </li>
                                                                                             ))}
                                                                                         </ul>
@@ -631,13 +524,13 @@ const Navbar = () => {
                                         :
                                         // If user is not logged in
                                         <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                                            <Link href="Login">
+                                            <Link href="/Login">
                                                 <div className="text-sm font-medium text-gray-700 hover:text-gray-800">
                                                     Sign in
                                                 </div>
                                             </Link>
                                             <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
-                                            <Link href="CreateAccount">
+                                            <Link href="/CreateAccount">
                                                 <div className="text-sm font-medium text-gray-700 hover:text-gray-800">
                                                     Create account
                                                 </div>
@@ -651,7 +544,7 @@ const Navbar = () => {
                                     <div className="flex lg:ml-6">
                                         <a href="#" className="p-2 text-gray-400 hover:text-gray-500">
                                             <span className="sr-only">Search</span>
-                                            <BsSearch onClick={() => setShowModal(true)} className="w-5 h-5" aria-hidden="true" />
+
                                         </a>
                                     </div>
 
@@ -663,7 +556,7 @@ const Navbar = () => {
                                                 aria-hidden="true"
                                             />
 
-                                            <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">0</span>
+                                            <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800"></span>
                                             <span className="sr-only">items in cart, view bag</span>
                                         </a>
                                     </div>
@@ -726,59 +619,52 @@ const Navbar = () => {
                                                     <div className="mt-8">
                                                         <div className="flow-root">
                                                             <ul role="list" className="-my-6 divide-y divide-gray-200">
-                                                                {products.map((product) => (
-                                                                    <li key={product.id} className="flex py-6">
-                                                                        <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                                                                            <img
-                                                                                src={product.imageSrc}
-                                                                                alt={product.imageAlt}
-                                                                                className="h-full w-full object-cover object-center"
-                                                                            />
-                                                                        </div>
+                                                                {cart ?
+                                                                    JSON.parse(localStorage.getItem("cart")).map((product) => (
+                                                                        <li key={product._id} className="flex py-6">
 
-                                                                        <div className="ml-4 flex flex-1 flex-col">
-                                                                            <div>
-                                                                                <div className="flex justify-between text-base font-medium text-gray-900">
-                                                                                    <h3>
-                                                                                        <a href={product.href}> {product.name} </a>
-                                                                                    </h3>
-                                                                                    <p className="ml-4">{product.price}</p>
+
+                                                                            <div className="ml-4 flex flex-1 flex-col">
+                                                                                <div>
+                                                                                    <div className="flex justify-between text-base font-medium text-gray-900">
+                                                                                        <h3>
+                                                                                            <Link href={`/Products/${product._id}`}> {product.title} </Link>
+                                                                                        </h3>
+                                                                                        <p className="ml-4">{product.type}</p>
+                                                                                    </div>
+                                                                                    <p className="mt-1 text-sm text-gray-500">{product.color}</p>
                                                                                 </div>
-                                                                                <p className="mt-1 text-sm text-gray-500">{product.color}</p>
-                                                                            </div>
-                                                                            <div className="flex flex-1 items-end justify-between text-sm">
-                                                                                <p className="text-gray-500">Qty {product.quantity}</p>
+                                                                                <div className="flex flex-1 items-end justify-between text-sm">
+                                                                                    <p className="text-gray-500">Qty {product.qty}</p>
 
-                                                                                <div className="flex">
-                                                                                    <button
-                                                                                        type="button"
-                                                                                        className="font-medium text-indigo-600 hover:text-indigo-500"
-                                                                                    >
-                                                                                        Remove
-                                                                                    </button>
+                                                                                    <div className="flex">
+                                                                                        <button
+                                                                                            type="button"
+                                                                                            name={product._id}
+                                                                                            className="font-medium text-indigo-600 hover:text-indigo-500"
+                                                                                            onClick={handleRemove}
+                                                                                        >
+                                                                                            Remove
+                                                                                        </button>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
-                                                                        </div>
-                                                                    </li>
-                                                                ))}
+                                                                        </li>
+                                                                    )) : "no Products In Cart"}
                                                             </ul>
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 <div className="border-t border-gray-200 py-6 px-4 sm:px-6">
-                                                    <div className="flex justify-between text-base font-medium text-gray-900">
-                                                        <p>Subtotal</p>
-                                                        <p>$262.00</p>
-                                                    </div>
                                                     <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
                                                     <div className="mt-6">
-                                                        <a
-                                                            href="#"
+                                                        <Link
+                                                            href="/Checkout"
                                                             className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
                                                         >
                                                             Checkout
-                                                        </a>
+                                                        </Link>
                                                     </div>
                                                     <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
                                                         <p>

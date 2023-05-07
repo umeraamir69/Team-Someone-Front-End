@@ -15,7 +15,7 @@ const CreateAccount = () => {
     const [Disable, setDisable] = useState(false);
     const [Pass, setPass] = useState(false)
     const [CnfrmPass, setCnfrmPass] = useState(false)
-    const [Data, setData] = useState({ FirstName: "", LastName: "", Contact: "", Email: "", Gender: "male", DOB: "", Password: "", CnfrmPass: "", City: "", Province: "punjab", Type: "Individual" });
+    const [Data, setData] = useState({ firstName: "", lastName: "", phone: "", email: "", gender: "male", dob: "", password: "", CnfrmPass: "", city: "", province: "punjab", country: "" });
     const [loader, setloader] = useState(true);
 
     const dispatch = useDispatch();
@@ -63,7 +63,7 @@ const CreateAccount = () => {
     }
     const stepArray = [
         "Bio Data",
-        "City",
+        "city",
         "Success"
     ];
 
@@ -96,8 +96,8 @@ const CreateAccount = () => {
         event.preventDefault();
         try {
             setloader(true);
-            if (!(Data.Password == Data.CnfrmPass) && (currentStep == 1)) {
-                toast.error("Password does'nt match", {
+            if (!(Data.password == Data.CnfrmPass) && (currentStep == 1)) {
+                toast.error("password does'nt match", {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -110,8 +110,8 @@ const CreateAccount = () => {
                 return;
             }
 
-            else if ((Data.Password == Data.CnfrmPass) && (currentStep == 1)) {
-                if (isNaN(Number(Data.Contact))) {
+            else if ((Data.password == Data.CnfrmPass) && (currentStep == 1)) {
+                if (isNaN(Number(Data.phone))) {
                     toast.warn("Enter Correct Phone Number", {
                         position: "top-right",
                         autoClose: 5000,
@@ -126,23 +126,24 @@ const CreateAccount = () => {
                 }
 
 
-                const request = await fetch('/api/ChckNewUser', {
+                const request = await fetch('https://softec-23-production.up.railway.app/api/auth/validate', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ Email: Data.Email, Contact: Data.Contact }),
+                    body: JSON.stringify({ email: Data.email, phone: Data.phone }),
                 })
                 const output = await request.json()
 
-                if (output.status) {
+
+                if (!output.exists) {
                     scrollToTop();
                     handleClick("next");
                     setloader(false);
                     return
                 }
                 else if (!output.status) {
-                    toast.error(output.error, {
+                    toast.error("Email & Phone Already Exsist", {
                         position: "top-right",
                         autoClose: 5000,
                         hideProgressBar: false,
@@ -158,7 +159,7 @@ const CreateAccount = () => {
 
 
             else if (currentStep == 2) {
-                const request = await fetch('/api/AddUser', {
+                const request = await fetch('https://softec-23-production.up.railway.app/api/auth/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -167,10 +168,10 @@ const CreateAccount = () => {
                 })
                 let output = await request.json()
 
-                if (output.status) {
+                if (output.success) {
                     setloader(false);
                     handleClick("next");
-                    toast.success(output.error, {
+                    toast.success("Account created Succesfully", {
                         position: "top-right",
                         autoClose: 5000,
                         hideProgressBar: false,
@@ -179,21 +180,14 @@ const CreateAccount = () => {
                         draggable: true,
                         progress: undefined,
                     });
-                    dispatch(loginSuccess({
-                        Contact: Data.Contact,
-                        Email: Data.Email,
-                        FName: Data.FirstName,
-                        ID: output.id,
-                        LName: Data.LastName
-                    }))
-                    setData({ FirstName: "", LastName: "", Contact: "", Email: "", Gender: "male", DOB: "", Password: "", CnfrmPass: "", Address: "", City: "", Province: "Punjab", Type: "" })
-
+                    dispatch(loginSuccess({ Data }))
+                    setData({ firstName: "", lastName: "", phone: "", email: "", Gender: "male", dob: "", password: "", CnfrmPass: "", Address: "", city: "", province: "Punjab", Type: "" })
                     localStorage.setItem("auth-token", output.data);
                     return
                 }
                 else if (!output.status) {
                     setloader(false);
-                    toast.error(output.error, {
+                    toast.error("An Error Occur", {
                         position: "top-right",
                         autoClose: 5000,
                         hideProgressBar: false,
@@ -270,33 +264,33 @@ const CreateAccount = () => {
                         <form className="w-full animate__fadeInLeft animate__animated" onSubmit={handleSubmit} method="POST">
                             <div className="flex flex-wrap -mx-3 mb-6">
                                 <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                                    <label className="block uppercase px-2 tracking-wide dark:text-gray-50 text-gray-700 text-xs font-bold mb-2" htmlFor="FirstName">
+                                    <label className="block uppercase px-2 tracking-wide dark:text-gray-50 text-gray-700 text-xs font-bold mb-2" htmlFor="firstName">
                                         First Name
                                     </label>
-                                    <input onChange={handleChange} value={Data.FirstName} className=" dark:bg-gray-700 dark:text-gray-100 focus:text-gray-600 appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="FirstName" name='FirstName' type="text" placeholder="First Name" required minLength="02" />
+                                    <input onChange={handleChange} value={Data.firstName} className=" dark:bg-gray-700 dark:text-gray-100 focus:text-gray-600 appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="firstName" name='firstName' type="text" placeholder="First Name" required minLength="02" />
                                 </div>
                                 <div className="w-full md:w-1/2 px-3">
-                                    <label className="block uppercase px-2 tracking-wide dark:text-gray-50 text-gray-700 text-xs font-bold mb-2" htmlFor="LastName">
+                                    <label className="block uppercase px-2 tracking-wide dark:text-gray-50 text-gray-700 text-xs font-bold mb-2" htmlFor="lastName">
                                         Last Name
                                     </label>
-                                    <input onChange={handleChange} value={Data.LastName} className="dark:bg-gray-700 dark:text-gray-100 focus:text-gray-600  appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="LastName" type="text" placeholder="Last Name" name="LastName" required minLength="02" />
+                                    <input onChange={handleChange} value={Data.lastName} className="dark:bg-gray-700 dark:text-gray-100 focus:text-gray-600  appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="lastName" type="text" placeholder="Last Name" name="lastName" required minLength="02" />
                                 </div>
                             </div>
 
 
                             <div className="flex flex-wrap  mb-6">
                                 <div className='w-full'>
-                                    <label htmlFor="Email" className="block dark:text-gray-50 uppercase px-2 tracking-wide text-gray-700 text-xs font-bold mb-2">Email</label>
+                                    <label htmlFor="email" className="block dark:text-gray-50 uppercase px-2 tracking-wide text-gray-700 text-xs font-bold mb-2">email</label>
 
                                     <div className="relative mt-1">
                                         <input
                                             type="email"
-                                            id="Email"
+                                            id="email"
                                             className="dark:bg-gray-700 dark:text-gray-100 focus:text-gray-600  w-full appearance-none block  bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                             placeholder="Enter Valid email"
                                             required
-                                            name="Email"
-                                            onChange={handleChange} value={Data.Email}
+                                            name="email"
+                                            onChange={handleChange} value={Data.email}
                                             minLength="6"
                                         />
 
@@ -322,19 +316,19 @@ const CreateAccount = () => {
 
 
                             <div className="flex flex-wrap  mb-6">
-                                <label className="block uppercase tracking-wide px-2 text-gray-700 text-xs dark:text-gray-50 font-bold mb-2" htmlFor="Password">
-                                    Password
+                                <label className="block uppercase tracking-wide px-2 text-gray-700 text-xs dark:text-gray-50 font-bold mb-2" htmlFor="password">
+                                    password
                                 </label>
                                 <div className="w-full  bg-gray-200   text-gray-700  mb-3  focus:outline-none focus:bg-white focus:border-gray-500">
                                     <div className="relative">
                                         <input
                                             type={Pass ? "text" : "password"}
-                                            id="Password"
+                                            id="password"
                                             className="dark:bg-gray-700 dark:text-gray-100 focus:text-gray-600  w-full appearance-none block  bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                             placeholder="Enter password"
                                             required
-                                            name="Password"
-                                            onChange={handleChange} value={Data.Password}
+                                            name="password"
+                                            onChange={handleChange} value={Data.password}
                                             pattern=".{08,20}" title="08 to 20 digit Long"
                                         />
 
@@ -364,12 +358,12 @@ const CreateAccount = () => {
                                     </div>
 
                                 </div>
-                                <p className="text-gray-600 dark:text-gray-50 text-xs italic">Password Must be eight digit long containing Alphnumberic & Special Charchters.</p>
+                                <p className="text-gray-600 dark:text-gray-50 text-xs italic">password Must be eight digit long containing Alphnumberic & Special Charchters.</p>
                             </div>
 
                             <div className="flex flex-wrap mb-6">
                                 <label className="block uppercase  dark:text-gray-50 tracking-wide text-gray-700 text-xs font-bold mb-2 px-2" htmlFor="CnfrmPass">
-                                    Confirm Password
+                                    Confirm password
                                 </label>
                                 <div className="w-full  bg-gray-200   text-gray-700 rounded  mb-3  focus:outline-none focus:bg-white focus:border-gray-500">
 
@@ -416,17 +410,17 @@ const CreateAccount = () => {
 
                             <div className="flex flex-wrap -mx-3 mb-2">
                                 <div className="w-full md:w-2/3 px-3 mb-6 md:mb-0">
-                                    <label className="block dark:text-gray-50 uppercase tracking-wide px-2 text-gray-700 text-xs font-bold mb-2" htmlFor="Contact">
-                                        Contact
+                                    <label className="block dark:text-gray-50 uppercase tracking-wide px-2 text-gray-700 text-xs font-bold mb-2" htmlFor="phone">
+                                        phone
                                     </label>
                                     <input
                                         className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 dark:bg-gray-700 dark:text-gray-100 focus:text-gray-600 "
-                                        id="Contact"
+                                        id="phone"
                                         type="tel"
                                         placeholder="03XXXXXXXXX"
-                                        required name="Contact"
+                                        required name="phone"
                                         onChange={handleChange}
-                                        value={Data.Contact}
+                                        value={Data.phone}
                                         pattern=".{11,13}" title="11 to 13 numbers" />
                                 </div>
                                 <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
@@ -450,7 +444,7 @@ const CreateAccount = () => {
 
 
                             <div className="flex flex-wrap  mt-6">
-                                <label className="block uppercase dark:text-gray-50 tracking-wide text-gray-700 text-xs font-bold mb-2 px-5" htmlFor="DOB">
+                                <label className="block uppercase dark:text-gray-50 tracking-wide text-gray-700 text-xs font-bold mb-2 px-5" htmlFor="dob">
                                     Date Of Birth
                                 </label>
                                 <div className="w-full  dark:bg-gray-700  bg-gray-200 border-gray-200 border text-gray-700 rounded  mb-3  focus:outline-none focus:bg-white focus:border-gray-500">
@@ -458,12 +452,12 @@ const CreateAccount = () => {
                                     <div className="relative">
                                         <input
                                             type="date"
-                                            id="DOB"
+                                            id="dob"
                                             className=" bg-gray-200 dark:bg-gray-700 dark:text-gray-100 focus:text-gray-600  py-3 px-3 leading-tight ocus:outline-none focus:bg-white w-full focus:border-gray-500"
                                             placeholder="Enter Date of Birth"
                                             required
-                                            name='DOB'
-                                            value={Data.DOB}
+                                            name='dob'
+                                            value={Data.dob}
                                             onChange={handleChange}
 
                                         />
@@ -479,7 +473,7 @@ const CreateAccount = () => {
 
 
                             <label htmlFor="iAgree" className="inline-flex relative items-center mb-5 cursor-pointer ">
-                                <input type="checkbox" required id="iAgree" className="sr-only peer" onChange={handleChange} />
+                                <input type="checkbox" required id="iAgree" className="sr-only peer" />
 
                                 <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                                 <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-50">I agree with the
@@ -515,26 +509,26 @@ const CreateAccount = () => {
                     {currentStep == 2 ?
                         <div className="w-full sm:rounded-md">
                             <form onSubmit={handleSubmit}>
-                                <label className="block uppercase tracking-wide dark:text-gray-50 text-gray-700 text-xs font-bold my-3 px-2" htmlFor="City">
-                                    City
+                                <label className="block uppercase tracking-wide dark:text-gray-50 text-gray-700 text-xs font-bold my-3 px-2" htmlFor="city">
+                                    city
                                 </label>
                                 <input
-                                    name="City"
-                                    id='City'
+                                    name="city"
+                                    id='city'
                                     type="text"
                                     className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white dark:bg-gray-700 dark:text-gray-100 focus:text-gray-600  focus:border-gray-500"
-                                    placeholder="City"
+                                    placeholder="city"
                                     required
                                     onChange={handleChange}
-                                    value={Data.City}
+                                    value={Data.city}
                                     minLength="3"
                                 />
                                 <div className="w-full ">
-                                    <label className="px-2 block dark:text-gray-50 uppercase tracking-wide text-gray-700 text-xs font-bold my-3" htmlFor="Province">
-                                        Province
+                                    <label className="px-2 block dark:text-gray-50 uppercase tracking-wide text-gray-700 text-xs font-bold my-3" htmlFor="province">
+                                        province
                                     </label>
                                     <div className="relative">
-                                        <select name="Province" id="Province" required className="dark:bg-gray-700 dark:text-gray-100 focus:text-gray-600  block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" onChange={handleChange} value={Data.Province}>
+                                        <select name="province" id="province" required className="dark:bg-gray-700 dark:text-gray-100 focus:text-gray-600  block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" onChange={handleChange} value={Data.province}>
                                             <option>Punjab</option>
                                             <option>Sindh</option>
                                             <option>Khyber Pakhtunkhwa (KPK)</option>
@@ -547,22 +541,22 @@ const CreateAccount = () => {
                                 </div>
 
 
+                                <label className="block uppercase tracking-wide dark:text-gray-50 text-gray-700 text-xs font-bold my-3 px-2" htmlFor="city">
+                                    country
+                                </label>
+                                <input
+                                    name="country"
+                                    id='country'
+                                    type="text"
+                                    className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white dark:bg-gray-700 dark:text-gray-100 focus:text-gray-600  focus:border-gray-500"
+                                    placeholder="country"
+                                    required
+                                    onChange={handleChange}
+                                    value={Data.country}
+                                    minLength="3"
+                                />
 
 
-                                <div className="w-full ">
-                                    <label className="px-2 block uppercase dark:text-gray-50 tracking-wide text-gray-700 text-xs font-bold my-3" htmlFor="Type">
-                                        User Type
-                                    </label>
-                                    <div className="relative">
-                                        <select name="Type" id="Type" required className="dark:bg-gray-700 dark:text-gray-100 focus:text-gray-600  block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" onChange={handleChange} value={Data.Type}>
-                                            <option>Dealer</option>
-                                            <option>Individual</option>
-                                        </select>
-                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                                            <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
-                                        </div>
-                                    </div>
-                                </div>
 
 
                                 <div className={`container flex items-center   justify-between px-10 my-10  ${Disable ? "hidden" : "flex"
@@ -588,7 +582,7 @@ const CreateAccount = () => {
                                 <span className="px-3.5 py-2 text-white bg-red-500 group-hover:bg-orange-600 flex items-center justify-center">
                                     <AiOutlineCar className='w-7 h-7' />
                                 </span>
-                                <span className="pl-4 pr-5 py-3">Find Your Dream car</span>
+                                <span className="pl-4 pr-5 py-3">Shop your Gadgets</span>
                             </span>
                         </Link>
                     </div>
