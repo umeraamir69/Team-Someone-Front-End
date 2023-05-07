@@ -3,6 +3,6 @@ FROM node:16.16.0
 WORKDIR /usr/src/app
 
 COPY . . 
-RUN npm install --production
-RUN npm run build
-CMD ["npm" , "run"]
+RUN yarn install --production
+RUN yarn run build
+CMD ["yarn" , "run"]

@@ -45,7 +45,7 @@ const Contact = () => {
     return (
         < >
             <div className="relative overflow-hidden  ">
-                <Image src={banner_Img} layout="intrinsic" height={400} className='sm:h-48' placeholder='blur' alt='' />
+                <img src="/images/contact_banner.png" layout="intrinsic" height={400} className='sm:h-48' placeholder='blur' alt='' />
                 <div className="absolute top-0 left-0 px-6 lg:pt-11 lg:pl-12 ">
                     <h4 className=" lg:text-5xl lg:mt-10 lg:font-bold font-semibold tracking-tight text-white ">Need Help ?</h4>
                     <p className="lg:text-3xl lg:mt-8 lg:mb-4 text-gray-100 text-sm sm:text-sm">We are always avalible to help our beloved customers!</p>
