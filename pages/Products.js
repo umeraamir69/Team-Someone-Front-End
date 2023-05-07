@@ -72,9 +72,9 @@ export default function ListingPg(props) {
 
 
             <Head>
-                <title>Cars Dawood Motor</title>
-                <meta name="description" content="Cars at Dawood motors.The name of trust. Leading car delaer In lahore punjab Pakistan. Developed by Muhammad Umer Aamir " />
-                <meta name="keywords" content="Cars, honda, toyota , bmw , sports car , dawood , dawood motors , dawood motor , lahore , punjab , pakistan , muhammad umer aamir , car , car dealer , mulana shaukat ali road, xh.someone, umeraamir.69 , dawood aamir " />
+                <title>Cars someone gaming shop</title>
+                <meta name="description" content="Cars at someone gaming shops.The name of trust. Leading car delaer In lahore punjab Pakistan. Developed by Muhammad Umer Aamir " />
+                <meta name="keywords" content="Cars, honda, toyota , bmw , sports car , dawood , someone gaming shops , someone gaming shop , lahore , punjab , pakistan , muhammad umer aamir , car , car dealer , mulana shaukat ali road, xh.someone, umeraamir.69 , dawood aamir " />
                 <meta name="author" content="Muhammad Umer Aamir xh.someone umeraamir.69 dawood Aamir" />
                 <link rel="icon" href="123.svg" />
             </Head>

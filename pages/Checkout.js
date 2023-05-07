@@ -4,6 +4,7 @@ import { admimloginSuccess, adminlogout, logout } from '../store/Action/userAuth
 import { useSelector } from 'react-redux'
 import Link from 'next/link';
 import { ToastContainer, toast, Zoom } from 'react-toastify';
+import Loader from "@/components/Loader";
 
 export default function Checkout() {
     const [dropdown1, setDropdown1] = useState(false);
@@ -70,6 +71,7 @@ export default function Checkout() {
                             <div className>
                                 <p className="text-3xl lg:text-4xl font-semibold leading-7 lg:leading-9 text-gray-800">Check out</p>
                             </div>
+
                             {isAuthenticated ?
                                 <button onClick={handleorder} className="focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 mt-8 text-base font-medium focus:ring-2 focus:ring-ocus:ring-gray-800 leading-4 hover:bg-black py-4 w-full md:w-4/12 lg:w-full text-white bg-gray-800">Order Now</button>
                                 :
